@@ -1,0 +1,53 @@
+Finding Lane Lines on the Road
+
+The main goals / steps for this section of the project are the below:
+Build a pipeline that isolates lane lines on the road
+Reflection
+1. Description of my pipeline. 
+My pipeline to draw consisted of 5 steps. First, after I took the dimensions of the image (below), 
+
+Image
+CarND-LaneLines-P1examples/Fig. 1
+
+I started the process with the goal of converting the images to grayscale as shown in Fig. 3 below. I am going through this step because without this process, the white and yellow lines that we plan to use will blurred excessively. So, for better contrasting, I use the gray image.
+
+
+Image
+CarND-LaneLines-P1examples/Fig. 2
+
+
+Image
+Fig. 3
+Next, we first isolate yellow and white from our original image. After doing so, we can observe how the yellow and the white of the lanes are very well isolated.
+In order for the algorithms to clearly isolate lanes on the road, I also needed to use Gaussian smoothing pre-processing to smoothen the edges of the image and reduce noise.  
+
+Image
+CarND-LaneLines-P1examples/Fig. 4
+
+
+Image
+Fig. 5
+The next step, Region of Interest, is set to determine a region of interest and discard any lines outside of this region. In this process, needed to detect the edges by applying a Canny which will help calculate the intensity gradients of the image and applies double threshold to determine edges  and discard all other data. The resulting image enables me to focus on lane detection and gives significance to the markers on the road that I am interested in tracking. So, with that, anything that is much brighter on the road will come out with a high contrast in a grayscale image.
+
+Image
+CarND-LaneLines-P1examples/Fig. 6
+
+We apply the Hough Transform to detect a shape, in this case, the edges from canny detection, identifying our lane markers and all points that lie on them. It helps to know that all lines represented as points and by voting on coordinates, these points are presented as lines. 
+So, a given line expressed as (ρ, θ), where contour C is going a distance ρ at angle θ from the origin, thus meeting the perpendicular C; that is ρ = x cos θ + y sin θ. Suffice it to say that a set of points on the contour will yield coordinates that cross at the point (ρ, θ). In OpenCV, it explains the process further as “ a line can be represented as y=mx+c or in a parametric form, as ρ=xcosθ + ysinθ where ρ is the perpendicular distance from the origin to the line, and θ is the angle formed by this perpendicular line and the horizontal axis measured in counter-clockwise”.
+
+
+Image
+CarND-LaneLines-P1examples/Fig. 7
+Finally, the process also includes a step where we derive the gradient of the left and right lanes. For the left lane, we observe that value x (width) increases as value y (height) decreases, therefore slope must be negative. Whereas in the case of the right lane, x increases and y increases resulting in a positive slope.
+
+Putting the images together, I overlaid the lines drawn in the over process, assigned weight and adjusted transparency so that the original image sets a good background to the colorfully marked lines.
+
+Image
+CarND-LaneLines-P1examples/Fig. 8
+
+
+2. Identify potential shortcomings with your current pipeline
+In testing my work on a picture/video I recorded and uploaded, I noticed that the lane markings in my code only partially identified the region of interest as intended. I would like to chalk that as one of the shortcomings as I would have liked the process to apply in any clearly recorded camera or picture as it did in the samples that were provided in the course. 
+
+3. Suggest possible improvements to your pipeline
+A possible improvement, which I hope to work on in upcoming projects is to have a code that’s creatively stable and could perform as well on roads with fast-changing slopes as well as areas where lighting (shading) might affect the computer vison.
